@@ -12,7 +12,7 @@ Add the flag "-h" to get more info about user selectable parameters.
 ```
 python csv2latextable.py -h
 usage: csv2latextable.py [-h] [-i INPUTFILE] [-d DELIMITER] [-q QUOTECHAR]
-                         [-pos TABLEPOS] [-caption CAPTION] [-label REFLABLE]
+                         [-pos TABLEPOS] [-caption CAPTION] [-label REFLABEL]
                          [--nounderline] [-tablespec TABLESPEC] [--longtable]
                          [--lessspacing] [--twocolumn] [--notopline]
                          [--doubleunderline]
@@ -26,7 +26,7 @@ optional arguments:
   -q QUOTECHAR          Set csv quotechar, default="
   -pos TABLEPOS         Set table position, default=htbp
   -caption CAPTION      Set table caption, default='Generated table'
-  -label REFLABLE       Set table reference label, default=''
+  -label REFLABEL       Set table reference label, default=''
   --nounderline         Don't add underline for each entry
   -tablespec TABLESPEC  Set table specifications, default='c', takes one type
                         and repeats it
