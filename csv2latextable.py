@@ -4,13 +4,14 @@ import csv
 import re
 
 class Csv2LatexTable:
-    def __init__(self, inputFile, delimiter, quotechar, tablepos, cap, reflabel, noUnderLine, tableSpec, longTable, lessSpacing, twoColumn, noTopLine, doubleUnderline):
+    def __init__(self, inputFile, delimiter, quotechar, tablepos, cap, reflabel, columns, noUnderLine, tableSpec, longTable, lessSpacing, twoColumn, noTopLine, doubleUnderline):
         self.inputFile = inputFile
         self.delimiter = delimiter
         self.quotechar = quotechar
         self.tablePos  = tablepos 
         self.caption   = cap
         self.refLabel  = reflabel
+        self.columns   = columns
         self.noUnderLine = noUnderLine
         self.tableSpec = tableSpec
         self.longTable = longTable
@@ -23,7 +24,14 @@ class Csv2LatexTable:
         """Reads a csv file and outputs a table to stdout"""
         with open(self.inputFile, "r") as csvfile:
             tablereader = csv.reader(csvfile, delimiter=self.delimiter, quotechar=self.quotechar)
-            columnHeaders = tablereader.next()
+            if (self.columns != ":"):
+                if (self.columns.find(":") == True):
+                    columns = self.columns.split(":")
+                    columnHeaders = tablereader.next()[int(columns[0]):int(columns[1])] if columns[1] else tablereader.next()[int(columns[0]):]
+                else:
+                    columnHeaders = [tablereader.next()[int(self.columns)]]
+            else:
+                columnHeaders = tablereader.next()
             numColumn = len(columnHeaders)
             self.genTableHead(numColumn, columnHeaders)
             
@@ -32,20 +40,28 @@ class Csv2LatexTable:
                 print("\\hline")
             
             for row in tablereader:
+                if (self.columns != ":"):
+                    if (self.columns.find(":") == True):
+                        columns = self.columns.split(":")
+                        crow = row[int(columns[0]):int(columns[1])] if columns[1] else row[int(columns[0]):]
+                    else:
+                        crow = [row[int(self.columns)]]
+                else:
+                    crow = row
                 if (not self.lessSpacing):
                     print('&'*(numColumn-1) + '\\\\')
                 
                 # Replace newlines or comma with actual newline in table
                 for i in range(numColumn-1): #temp fix
-                    if '\n' in row[i]:
-                        row[i] = '\\parbox{0.4\\textwidth}{' + str.replace(row[i], '\n', ' \\\\') + '}'
-                    elif ',' in row[i]:
-                        row[i] = '\\parbox{0.4\\textwidth}{' + str.replace(row[i], ',', ' \\\\') + '}'
+                    if '\n' in crow[i]:
+                        crow[i] = '\\parbox{0.4\\textwidth}{' + str.replace(crow[i], '\n', ' \\\\') + '}'
+                    elif ',' in crow[i]:
+                        crow[i] = '\\parbox{0.4\\textwidth}{' + str.replace(crow[i], ',', ' \\\\') + '}'
                     
-                if '\n' in row:
-                    print(row.index('\n'))
+                if '\n' in crow:
+                    print(crow.index('\n'))
                 
-                print("  %s \\\\" % re.sub('_', '\\_', ' & '.join(row[:numColumn]) ))
+                print("  %s \\\\" % re.sub('_', '\\_', ' & '.join(crow[:numColumn]) ))
                 if (not self.noUnderLine):
                     print("\\hline")
             
@@ -132,7 +148,9 @@ if __name__=="__main__":
     parser.add_argument('-caption', dest='caption', default="Generated table", 
                         help="Set table caption, default='Generated table'")   
     parser.add_argument('-label', dest='refLabel', default="", 
-                        help="Set table reference label, default=''")   
+                        help="Set table reference label, default=''")  
+    parser.add_argument('-columns', dest='columns', default=":", 
+                        help="Explicitly include given columns, default=:")   
     parser.add_argument('--nounderline', dest='noUnderLine', action='store_true',
                         help="Don't add underline for each entry")   
     parser.add_argument('-tablespec', dest='tableSpec', default="c", 
@@ -151,5 +169,5 @@ if __name__=="__main__":
 
     args = parser.parse_args()
 
-    c2lt = Csv2LatexTable(args.inputFile, args.delimiter, args.quotechar, args.tablePos, args.caption, args.refLabel, args.noUnderLine, args.tableSpec, args.longTable, args.lessSpacing, args.twoColumn, args.noTopLine, args.doubleUnderline)
+    c2lt = Csv2LatexTable(args.inputFile, args.delimiter, args.quotechar, args.tablePos, args.caption, args.refLabel, args.columns, args.noUnderLine, args.tableSpec, args.longTable, args.lessSpacing, args.twoColumn, args.noTopLine, args.doubleUnderline)
     c2lt.readCsvandMakeTable()

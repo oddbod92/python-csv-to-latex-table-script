@@ -13,8 +13,8 @@ Add the flag "-h" to get more info about user selectable parameters.
 python csv2latextable.py -h
 usage: csv2latextable.py [-h] [-i INPUTFILE] [-d DELIMITER] [-q QUOTECHAR]
                          [-pos TABLEPOS] [-caption CAPTION] [-label REFLABEL]
-                         [--nounderline] [-tablespec TABLESPEC] [--longtable]
-                         [--lessspacing] [--twocolumn] [--notopline]
+                         [-columns COLUMNS] [--nounderline] [-tablespec TABLESPEC]
+                         [--longtable] [--lessspacing] [--twocolumn] [--notopline]
                          [--doubleunderline]
 
 Csv to latex table converter.
@@ -27,6 +27,8 @@ optional arguments:
   -pos TABLEPOS         Set table position, default=htbp
   -caption CAPTION      Set table caption, default='Generated table'
   -label REFLABEL       Set table reference label, default=''
+  -columns COLUMNS      Excplicitly include given columns, default=':'
+                        Given as single number, or range (0:3, 4:, 5:9)
   --nounderline         Don't add underline for each entry
   -tablespec TABLESPEC  Set table specifications, default='c', takes one type
                         and repeats it
