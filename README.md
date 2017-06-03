@@ -32,8 +32,8 @@ optional arguments:
                         and repeats it
   --longtable           Use longtable package
   --lessspacing         Don't add '&&&\\' as spacings between entries
-  --twocolumn			Use table* package
-  --notopline			Don't add a top line to the table
-  --doubleunderline		Add double underline below headers
+  --twocolumn           Use table* package across two columns
+  --notopline           Don't add a top line to the table
+  --doubleunderline     Add double underline below headers
 ```
 
