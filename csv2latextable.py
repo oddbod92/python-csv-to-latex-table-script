@@ -4,17 +4,18 @@ import csv
 import re
 
 class Csv2LatexTable:
-    def __init__(self, inputFile, delimiter, quotechar, tablepos, cap, reflable, noUnderLine, tableSpec, longTable, lessSpacing):
+    def __init__(self, inputFile, delimiter, quotechar, tablepos, cap, reflabel, noUnderLine, tableSpec, longTable, lessSpacing, twoColumn):
         self.inputFile = inputFile
         self.delimiter = delimiter
         self.quotechar = quotechar
         self.tablePos  = tablepos 
         self.caption   = cap
-        self.refLable  = reflable
+        self.refLabel  = reflabel
         self.noUnderLine = noUnderLine
         self.tableSpec = tableSpec
         self.longTable = longTable
         self.lessSpacing = lessSpacing
+        self.twoColumn = twoColumn
 
     def readCsvandMakeTable(self):
         """Reads a csv file and outputs a table to stdout"""
@@ -64,10 +65,10 @@ class Csv2LatexTable:
         either standard or longtable."""
         temp = '|' + self.tableSpec + (('|'+self.tableSpec)*(numColumn-1)) + '|'
         if (not self.longTable):
-            print("""\\begin{table}[%s]
+            print("""\\begin{table%s}[%s]
 \\centering
  \\caption{%s}
- \\begin{tabular}{%s}""" % (self.tablePos, self.caption, temp))
+ \\begin{tabular}{%s}""" % ("*" if self.twoColumn else "", self.tablePos, self.caption, temp))
         
             print("  %s \\\\" % (' & '.join(columnHeaders[:numColumn])))
             print("  \\hline")
@@ -77,8 +78,8 @@ class Csv2LatexTable:
 \\begin{longtable}[%s]{%s}
 \\caption{%s}""" % (self.tablePos, temp, self.caption))
 
-            if (self.refLable != ""):
-                print("\\label{%s}\\\\" % self.refLable)
+            if (self.refLabel != ""):
+                print("\\label{%s}\\\\" % self.refLabel)
                 print("\\hline")
             
             self.longTableHeaders(numColumn, columnHeaders)
@@ -101,12 +102,13 @@ class Csv2LatexTable:
         """ Prints out table footers """
         if (not self.longTable):
             print(" \\end{tabular}")
-            if (self.refLable != ""):
-                print("\\label{%s}" % self.refLable)
-            print("\\end{table}")
-        
+            if (self.refLabel != ""):
+                print("\\label{%s}" % self.refLabel)
+            print ("\\end{table%s}" % ("*" if self.twoColumn else ""))
         else:
             print("\\end{longtable}")
+            if (self.refLabel != ""):
+                print("\\label{%s}" % self.refLabel)
             print("\\end{center}")
 
 
@@ -125,8 +127,8 @@ if __name__=="__main__":
                         help="Set table position, default=htbp")
     parser.add_argument('-caption', dest='caption', default="Generated table", 
                         help="Set table caption, default='Generated table'")   
-    parser.add_argument('-lable', dest='refLable', default="", 
-                        help="Set table reference lable, default=''")   
+    parser.add_argument('-label', dest='refLabel', default="", 
+                        help="Set table reference label, default=''")   
     parser.add_argument('--nounderline', dest='noUnderLine', action='store_true',
                         help="Don't add underline for each entry")   
     parser.add_argument('-tablespec', dest='tableSpec', default="c", 
@@ -134,10 +136,12 @@ if __name__=="__main__":
     parser.add_argument('--longtable', dest='longTable', action='store_true',
                         help="Use longtable package") 
     parser.add_argument('--lessspacing', dest='lessSpacing', action='store_true',
-                        help="Don't add '&&&\\\\' as spacings between entries")   
+                        help="Don't add '&&&\\\\' as spacings between entries") 
+    parser.add_argument('--twocolumn', dest='twoColumn', action='store_true',
+                        help="Use table* package across two columns")   
     
 
     args = parser.parse_args()
 
-    c2lt = Csv2LatexTable(args.inputFile, args.delimiter, args.quotechar, args.tablePos, args.caption, args.refLable, args.noUnderLine, args.tableSpec, args.longTable, args.lessSpacing)
+    c2lt = Csv2LatexTable(args.inputFile, args.delimiter, args.quotechar, args.tablePos, args.caption, args.refLabel, args.noUnderLine, args.tableSpec, args.longTable, args.lessSpacing, args.twoColumn)
     c2lt.readCsvandMakeTable()
