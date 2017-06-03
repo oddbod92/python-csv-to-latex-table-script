@@ -14,7 +14,8 @@ python csv2latextable.py -h
 usage: csv2latextable.py [-h] [-i INPUTFILE] [-d DELIMITER] [-q QUOTECHAR]
                          [-pos TABLEPOS] [-caption CAPTION] [-label REFLABLE]
                          [--nounderline] [-tablespec TABLESPEC] [--longtable]
-                         [--lessspacing] [--twocolumn]
+                         [--lessspacing] [--twocolumn] [--notopline]
+                         [--doubleunderline]
 
 Csv to latex table converter.
 
@@ -32,5 +33,7 @@ optional arguments:
   --longtable           Use longtable package
   --lessspacing         Don't add '&&&\\' as spacings between entries
   --twocolumn			Use table* package
+  --notopline			Don't add a top line to the table
+  --doubleunderline		Add double underline below headers
 ```
 
