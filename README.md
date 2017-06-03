@@ -7,6 +7,7 @@ Tested with python version 2.7.5
 ## Usage:
     $ python csv2latextable.py -i example1.csv
 Writes to stdout a latex table based on example1.csv
+
     $ python csv2latextable.py -i example1.csv | pbcopy
 Copies output directly to clipboard
 
